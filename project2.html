@@ -12,6 +12,7 @@
 
     <title>TODOs List</title>
 </head>
+
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
@@ -42,7 +43,7 @@
                             <li><a class="dropdown-item" href="#">Something else here</a></li>
                         </ul>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Contact 
+                        <a class="nav-link" href="#">Contact
                             Me
                         </a>
                     </li>
@@ -57,10 +58,10 @@
     </nav>
     <div class="container my-4">
         <h2 class="text-center">TODOs List</h2>
-        <form>
+
         <div class="form-group">
             <label for="title">Title</label>
-            <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+            <input type="text" class="form-control" id="title" aria-describedby="emailHelp">
             <small id="emailHelp" class="form-text">Add an item to the list</small>
         </div>
         <div class="form-group">
@@ -74,7 +75,8 @@
                 <label for="description">Comments</label>
             </div> --><br>
         <button type="submit" id="add" class="btn btn-primary">Add to List</button>
-    </form>
+        <button type="submit" id="clear" class="btn btn-primary" onclick ="clearstorage()">Clear List</button>
+
 
         <div id="items" class="my-4">
             <h2>Your Items</h2>
@@ -85,22 +87,14 @@
                         <th scope="col">Item Title</th>
                         <th scope="col">Description</th>
                         <th scope="col">Actions</th>
-
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="tableBody">
                     <tr>
                         <th scope="row">1</th>
                         <td>Get Some Coffee</td>
                         <td>You need coffee as your a coder</td>
                         <td><button class="btn btn-sm btn-primary">Delete</button></td>
-
-                    </tr>
-
-                    <tr>
-                        <th scope="row">3</th>
-                        <td colspan="2">Larry the Bird</td>
-                        <td>@twitter</td>
                     </tr>
                 </tbody>
             </table>
@@ -115,10 +109,68 @@
         crossorigin="anonymous"></script>
 
     <script>
+
+        function getAndUpdate() {
+            console.log("Updating list...");
+            tit = document.getElementById('title').value;
+            desc = document.getElementById('description').value;
+            if (localStorage.getItem('itemJson') == null) {
+                itemJsonArray = [];
+                itemJsonArray.push([tit, desc]);
+                localStorage.setItem('itemJson', JSON.stringify(itemJsonArray))
+
+            }
+            else {
+                itemJsonArrayStr = localStorage.getItem('itemJson')
+                itemJsonArray = JSON.parse(itemJsonArrayStr);
+                itemJsonArray.push([tit, desc]);
+                localStorage.setItem('itemJson', JSON.stringify(itemJsonArray))
+            }
+            update();
+
+        }
+        function update() {
+            if (localStorage.getItem('itemJson') == null) {
+                itemJsonArray = [];
+                localStorage.setItem('itemJson', JSON.stringify(itemJsonArray))
+
+            }
+            else {
+                itemJsonArrayStr = localStorage.getItem('itemJson')
+                itemJsonArray = JSON.parse(itemJsonArrayStr);
+
+            }
+
+            //populate the table
+            let tableBody = document.getElementById("tableBody")
+            let str = "";
+            itemJsonArray.forEach((element, index) => {
+                str += `
+                <tr>
+                    <th scope="row">${index + 1}</th>
+                    <td>${element[1]}</td>
+                    <td>${element[2]}</td>
+                    <td><button class="btn btn-sm btn-primary" onclick="deleted(${index})">Delete</button></td>
+                </tr>`;
+            });
+            tableBody.innerHTML = str;
+        }
         add = document.getElementById("add");
-        add.addEventListner("click", ()=>{
-            console.log("Updating list...")
-        })
+        add.addEventListener("click", getAndUpdate);
+        update();
+        function deleted(itemIndex) {
+            console.log('delete', 'itemIndex')
+            itemJsonArrayStr = localStorage.getItem('itemJson')
+            itemJsonArray = JSON.parse(itemJsonArrayStr);
+            itemJsonArray.splice(itemIndex, 1);
+            localStorage.setItem('itemJson', JSON.stringify(itemJsonArray))
+            update();
+        }
+        function clearstorage(){
+            console.log('Cleared Successfully')
+            localStorage.clear();
+            update();
+        }
     </script>
 
     <!-- Option 2: Separate Popper and Bootstrap JS -->
