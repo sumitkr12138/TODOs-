@@ -58,26 +58,26 @@
     </nav>
     <div class="container my-4">
         <h2 class="text-center">TODOs List</h2>
+        <form>
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" class="form-control" id="title" aria-describedby="emailHelp">
+                <small id="emailHelp" class="form-text">Add an item to the list</small>
+            </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea class="form-control" id="description" rows="3" required></textarea>
+                <!-- <input type="password" class="form-control" id="exampleInputPassword1"> -->
+            </div>
 
-        <div class="form-group">
-            <label for="title">Title</label>
-            <input type="text" class="form-control" id="title" aria-describedby="emailHelp">
-            <small id="emailHelp" class="form-text">Add an item to the list</small>
-        </div>
-        <div class="form-group">
-            <label for="description">Description</label>
-            <textarea class="form-control" id="description" rows="3"></textarea>
-            <!-- <input type="password" class="form-control" id="exampleInputPassword1"> -->
-        </div>
-
-        <!-- <div class="form-group">
+            <!-- <div class="form-group">
                 <textarea class="form-control" id="description"></textarea>
                 <label for="description">Comments</label>
             </div> --><br>
-        <button type="submit" id="add" class="btn btn-primary">Add to List</button>
-        <button type="submit" id="clear" class="btn btn-primary" onclick ="clearstorage()">Clear List</button>
+            <button type="submit" id="add" class="btn btn-primary">Add to List</button>
+            <button type="submit" id="clear" class="btn btn-primary" onclick="clearstorage()">Clear List</button>
 
-
+        </form>
         <div id="items" class="my-4">
             <h2>Your Items</h2>
             <table class="table">
@@ -133,11 +133,13 @@
             if (localStorage.getItem('itemJson') == null) {
                 itemJsonArray = [];
                 localStorage.setItem('itemJson', JSON.stringify(itemJsonArray))
+                console.log('fromif :', itemJsonArray)
 
             }
             else {
                 itemJsonArrayStr = localStorage.getItem('itemJson')
                 itemJsonArray = JSON.parse(itemJsonArrayStr);
+                console.log('fromelse :', itemJsonArray)
 
             }
 
@@ -148,8 +150,8 @@
                 str += `
                 <tr>
                     <th scope="row">${index + 1}</th>
+                    <td>${element[0]}</td>
                     <td>${element[1]}</td>
-                    <td>${element[2]}</td>
                     <td><button class="btn btn-sm btn-primary" onclick="deleted(${index})">Delete</button></td>
                 </tr>`;
             });
@@ -166,7 +168,7 @@
             localStorage.setItem('itemJson', JSON.stringify(itemJsonArray))
             update();
         }
-        function clearstorage(){
+        function clearstorage() {
             console.log('Cleared Successfully')
             localStorage.clear();
             update();
